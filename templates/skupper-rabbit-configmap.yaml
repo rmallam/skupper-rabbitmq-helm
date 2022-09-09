@@ -1,0 +1,144 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: skupper-rabbitmq-config
+data:
+  advanced.config: >
+    [
+    {rabbit, [{quorum_cluster_size, 5},
+              {quorum_commands_soft_limit, 512}]}
+    ].
+  rabbitmq.conf: >
+    ## Username and password
+
+    ##
+
+    default_user = anz
+
+    default_pass = anz
+
+    # Clustering
+
+    #
+
+    cluster_formation.peer_discovery_backend     = classic_config
+
+    cluster_formation.classic_config.nodes.1 = rabbit@skupper-rabbit-{{ .Values.site1 }}-0
+
+    cluster_formation.classic_config.nodes.2 = rabbit@skupper-rabbit-{{ .Values.site1 }}-1
+
+    cluster_formation.classic_config.nodes.3 = rabbit@skupper-rabbit-{{ .Values.site1 }}-2
+
+    cluster_formation.classic_config.nodes.4 = rabbit@skupper-rabbit-{{ .Values.site2 }}-0
+  
+    cluster_formation.classic_config.nodes.5 = rabbit@skupper-rabbit-{{ .Values.site2 }}-1
+
+    cluster_formation.classic_config.nodes.6 = rabbit@skupper-rabbit-{{ .Values.site2 }}-2
+
+
+    cluster_formation.node_cleanup.interval = 120
+
+    #cluster_partition_handling = autoheal
+
+    cluster_partition_handling = pause_if_all_down
+
+
+    # ## Recovery strategy. Can be either 'autoheal' or 'ignore'
+
+    cluster_partition_handling.pause_if_all_down.recover = autoheal
+
+
+    # ## Node names to check
+
+    cluster_partition_handling.pause_if_all_down.nodes.1 =
+    rabbit@rabbit@skupper-rabbit-{{ .Values.site1 }}-0
+
+    cluster_partition_handling.pause_if_all_down.nodes.2 =
+    rabbit@rabbit@skupper-rabbit-{{ .Values.site1 }}-1
+
+    cluster_partition_handling.pause_if_all_down.nodes.3 =
+    rabbit@rabbit@skupper-rabbit-{{ .Values.site1 }}-2
+
+    cluster_partition_handling.pause_if_all_down.nodes.4 =
+    rabbit@rabbit@skupper-rabbit-{{ .Values.site2 }}-0
+
+    cluster_partition_handling.pause_if_all_down.nodes.5 =
+    rabbit@rabbit@skupper-rabbit-{{ .Values.site2 }}-1
+  
+    cluster_partition_handling.pause_if_all_down.nodes.6 =
+    rabbit@rabbit@skupper-rabbit-{{ .Values.site2 }}-2
+
+    # cluster_formation.node_cleanup.only_log_warning = true
+
+    # queue master locator
+
+    queue_master_locator = min-masters
+
+    # enable guest user
+
+    loopback_users.guest = false
+
+    #default_vhost = wdservices-dev1-vhost
+    disk_free_limit.absolute = 1000000000
+
+    #load_definitions = /app/load_definition.json
+
+    listeners.ssl.default = 5671
+
+    ssl_options.cacertfile = /etc/rabbitmq/ssl/cacert.pem
+
+    ssl_options.certfile = /etc/rabbitmq/ssl/rabbitmq.pem
+
+    ssl_options.keyfile = /etc/rabbitmq/ssl/rabbitmq.key
+
+    ssl_options.password = cobra123
+
+    ssl_options.verify = verify_none
+
+    ssl_options.fail_if_no_peer_cert = false
+
+    ssl_options.versions.1 = tlsv1.2
+
+    management.ssl.port = 15671
+
+    management.tcp.port = 15672
+
+    management.ssl.cacertfile = /etc/rabbitmq/ssl/cacert.pem
+
+    management.ssl.certfile   = /etc/rabbitmq/ssl/rabbitmq.pem
+
+    management.ssl.keyfile    = /etc/rabbitmq/ssl/rabbitmq.key
+
+    management.ssl.password   =  cobra123
+
+    # For RabbitMQ 3.7.10 and later versions
+
+    management.ssl.honor_cipher_order   = true
+
+    management.ssl.honor_ecc_order      = true
+
+    management.ssl.client_renegotiation = false
+
+    management.ssl.secure_renegotiate   = true
+
+    management.ssl.versions.1 = tlsv1.2
+
+    management.ssl.versions.2 = tlsv1.1
+
+    management.ssl.ciphers.1 = ECDHE-ECDSA-AES256-GCM-SHA384
+
+    management.ssl.ciphers.2 = ECDHE-RSA-AES256-GCM-SHA384
+
+    management.ssl.ciphers.3 = ECDHE-ECDSA-AES256-SHA384
+
+    management.ssl.ciphers.4 = ECDHE-RSA-AES256-SHA384
+
+    management.ssl.ciphers.5 = ECDH-ECDSA-AES256-GCM-SHA384
+
+    management.ssl.ciphers.6 = ECDH-RSA-AES256-GCM-SHA384
+
+    management.ssl.ciphers.7 = ECDH-ECDSA-AES256-SHA384
+
+    management.ssl.ciphers.8 = ECDH-RSA-AES256-SHA384
+    
+    management.ssl.ciphers.9 = DHE-RSA-AES256-GCM-SHA384
